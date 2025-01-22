@@ -1,0 +1,190 @@
+// Carregar a coleção MOD16A2.061 para ET, LE, PET e PLE
+var mod16a2Dataset = ee.ImageCollection('MODIS/061/MOD16A2')
+                        .filter(ee.Filter.date('2000-01-01', '2024-06-30'));
+
+// Selecionar as bandas ET, LE, PET, PLE
+var et = mod16a2Dataset.select('ET');
+var le = mod16a2Dataset.select('LE');
+var pet = mod16a2Dataset.select('PET');
+var ple = mod16a2Dataset.select('PLE');
+
+// Calcular a média das bandas ET, LE, PET e PLE
+var meanET = et.mean();
+var meanLE = le.mean();
+var meanPET = pet.mean();
+var meanPLE = ple.mean();
+
+// Carregar a coleção MCD18A1.061 para DSR
+var mcd18a1Dataset = ee.ImageCollection('MODIS/061/MCD18A1')
+                        .filter(ee.Filter.date('2000-01-01', '2024-06-30'));
+
+// Selecionar a banda DSR
+var dsr = mcd18a1Dataset.select('DSR');
+
+// Calcular a média de DSR
+var meanDSR = dsr.mean();
+
+// Carregar a coleção MCD18C2.061 para os valores de PAR
+var mcd18c2Dataset = ee.ImageCollection('MODIS/061/MCD18C2')
+                        .filter(ee.Filter.date('2000-01-01', '2024-06-30'));
+
+// Selecionar todas as bandas de PAR (GMT_0000_PAR a GMT_2100_PAR)
+var parBands = mcd18c2Dataset.select([
+  'GMT_0000_PAR', 'GMT_0300_PAR', 'GMT_0600_PAR', 'GMT_0900_PAR',
+  'GMT_1200_PAR', 'GMT_1500_PAR', 'GMT_1800_PAR', 'GMT_2100_PAR'
+]);
+
+// Calcular a média das bandas de PAR
+var meanPAR = parBands.mean();
+
+// Definir a região de exportação (limites do estado)
+var saoPauloRegion = ee.Geometry.Rectangle([-53.0988, -25.4344, -44.1652, -19.6560]);
+
+// Exportar ET médio
+Export.image.toDrive({
+  image: meanET,
+  description: 'Mean_ET_SaoPaulo',
+  folder: 'EarthEngineExports',
+  region: saoPauloRegion,
+  scale: 500,
+  crs: 'EPSG:4326',
+  maxPixels: 1e13
+});
+
+// Exportar LE médio
+Export.image.toDrive({
+  image: meanLE,
+  description: 'Mean_LE_SaoPaulo',
+  folder: 'EarthEngineExports',
+  region: saoPauloRegion,
+  scale: 500,
+  crs: 'EPSG:4326',
+  maxPixels: 1e13
+});
+
+// Exportar PET médio
+Export.image.toDrive({
+  image: meanPET,
+  description: 'Mean_PET_SaoPaulo',
+  folder: 'EarthEngineExports',
+  region: saoPauloRegion,
+  scale: 500,
+  crs: 'EPSG:4326',
+  maxPixels: 1e13
+});
+
+// Exportar PLE médio
+Export.image.toDrive({
+  image: meanPLE,
+  description: 'Mean_PLE_SaoPaulo',
+  folder: 'EarthEngineExports',
+  region: saoPauloRegion,
+  scale: 500,
+  crs: 'EPSG:4326',
+  maxPixels: 1e13
+});
+
+// Exportar DSR médio
+Export.image.toDrive({
+  image: meanDSR,
+  description: 'Mean_DSR_SaoPaulo',
+  folder: 'EarthEngineExports',
+  region: saoPauloRegion,
+  scale: 500,
+  crs: 'EPSG:4326',
+  maxPixels: 1e13
+});
+
+// Exportar PAR médio
+Export.image.toDrive({
+  image: meanPAR,
+  description: 'Mean_PAR_SaoPaulo',
+  folder: 'EarthEngineExports',
+  region: saoPauloRegion,
+  scale: 500,
+  crs: 'EPSG:4326',
+  maxPixels: 1e13
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Carregar a coleção MODIS para NDVI e EVI
+var dataset = ee.ImageCollection('MODIS/061/MOD13A1')
+                  .filter(ee.Filter.date('2000-01-01', '2024-06-30'));
+
+// Selecionar as bandas NDVI e EVI
+var ndvi = dataset.select('NDVI');
+var evi = dataset.select('EVI');
+
+// Calcular a média para NDVI e EVI
+var meanNdvi = ndvi.mean();
+var meanEvi = evi.mean();
+
+// Carregar a coleção MCD43A4 
+var reflectanceDataset = ee.ImageCollection('MODIS/006/MCD43A4')
+                              .filter(ee.Filter.date('2000-01-01', '2024-06-30'));
+
+// Selecionar as bandas de reflectância (1 a 7)
+var reflectanceBands = reflectanceDataset.select([
+  'Nadir_Reflectance_Band1',
+  'Nadir_Reflectance_Band2',
+  'Nadir_Reflectance_Band3',
+  'Nadir_Reflectance_Band4',
+  'Nadir_Reflectance_Band5',
+  'Nadir_Reflectance_Band6',
+  'Nadir_Reflectance_Band7'
+]);
+
+// Calcular a média das bandas de reflectância
+var meanReflectance = reflectanceBands.mean();
+
+// Definir a região de exportação (limites do estado)
+var saoPauloRegion = ee.Geometry.Rectangle([-53.0988, -25.4344, -44.1652, -19.6560]);
+
+// Exportar NDVI médio
+Export.image.toDrive({
+  image: meanNdvi,
+  description: 'Mean_NDVI_SaoPaulo',
+  folder: 'EarthEngineExports',
+  region: saoPauloRegion,
+  scale: 500,
+  crs: 'EPSG:4326',
+  maxPixels: 1e13
+});
+
+// Exportar EVI médio
+Export.image.toDrive({
+  image: meanEvi,
+  description: 'Mean_EVI_SaoPaulo',
+  folder: 'EarthEngineExports',
+  region: saoPauloRegion,
+  scale: 500,
+  crs: 'EPSG:4326',
+  maxPixels: 1e13
+});
+
+// Exportar reflectância média (bandas 1 a 7)
+Export.image.toDrive({
+  image: meanReflectance,
+  description: 'Mean_Reflectance_SaoPaulo',
+  folder: 'EarthEngineExports',
+  region: saoPauloRegion,
+  scale: 500,
+  crs: 'EPSG:4326',
+  maxPixels: 1e13
+});
